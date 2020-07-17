@@ -1,0 +1,9 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:gs="http://vabalas.dev/soap-iban-validator">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <gs:getIBANValidationRequest>
+            <gs:number>FR7630006000011234567890189</gs:number>
+        </gs:getIBANValidationRequest>
+    </soapenv:Body>
+</soapenv:Envelope>
