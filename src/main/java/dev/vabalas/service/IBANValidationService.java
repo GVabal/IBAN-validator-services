@@ -1,6 +1,8 @@
 package dev.vabalas.service;
 
 import dev.vabalas.repository.IBANCountryRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
@@ -9,6 +11,7 @@ import java.util.regex.Pattern;
 @Service
 public class IBANValidationService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(IBANValidationService.class);
     private final IBANCountryRepository repository;
 
     public IBANValidationService(IBANCountryRepository repository) {
@@ -16,28 +19,34 @@ public class IBANValidationService {
     }
 
     public boolean validateFormat(String number) {
+        LOGGER.info("Validating format for IBAN " + number);
         return Pattern.matches("[A-z]{2}\\d{2}.+", number);
     }
 
     public boolean validateCountry(String number) {
+        LOGGER.info("Validating country for IBAN " + number);
         String symbol = number.substring(0, 2);
         return repository.getCountries().containsKey(symbol);
     }
 
     public boolean validateLength(String number) {
+        LOGGER.info("Validating length for IBAN " + number);
         return number.length() == repository.getCountries().get(number.substring(0, 2)).getLength();
     }
 
     public boolean validateStructure(String number) {
+        LOGGER.info("Validating structure for IBAN " + number);
         return Pattern.matches(repository.getCountries().get(number.substring(0, 2)).getStructure(), number.substring(4));
     }
 
     public boolean validateMod97(String number) {
+        LOGGER.info("Validating mod97 for IBAN " + number);
         BigInteger bigInteger = new BigInteger(convertIBANToNumber(number));
         return bigInteger.mod(new BigInteger("97")).equals(BigInteger.ONE);
     }
 
     public boolean validateIBAN(String number) {
+        LOGGER.info("Validating IBAN " + number);
         return validateFormat(number) &&
                 validateCountry(number) &&
                 validateLength(number) &&
@@ -46,6 +55,7 @@ public class IBANValidationService {
     }
 
     public String convertIBANToNumber(String number) {
+        LOGGER.info("Converting IBAN " + number + " to number");
         number = number.substring(4) + number.substring(0, 4);
         StringBuilder result = new StringBuilder();
         for (Character c : number.toUpperCase().toCharArray()) {

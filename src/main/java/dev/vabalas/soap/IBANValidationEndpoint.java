@@ -2,6 +2,8 @@ package dev.vabalas.soap;
 
 import dev.vabalas.service.IBANValidationService;
 import dev.vabalas.soap_iban_validator.IBANNumber;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
@@ -12,6 +14,8 @@ import dev.vabalas.soap_iban_validator.GetIBANValidationResponse;
 
 @Endpoint
 public class IBANValidationEndpoint {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(IBANValidationEndpoint.class);
     private static final String NAMESPACE_URI = "http://vabalas.dev/soap-iban-validator";
 
     private final IBANValidationService service;
@@ -23,6 +27,7 @@ public class IBANValidationEndpoint {
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getIBANValidationRequest")
     @ResponsePayload
     public GetIBANValidationResponse getCountry(@RequestPayload GetIBANValidationRequest request) {
+        LOGGER.info("/soap iban-validation.xsd getIBANValidationRequest");
         GetIBANValidationResponse response = new GetIBANValidationResponse();
 
         IBANNumber ibanNumber = new IBANNumber();
